@@ -1,6 +1,6 @@
 import pygame
 from pygame.locals import *
-pygame.init()
+
 
 import math
 import argparse
@@ -14,6 +14,7 @@ SCREEN_HEIGHT = 600
 
 def main(args):
     # Set up the drawing window
+    pygame.init()
     screen = pygame.display.set_mode([SCREEN_WIDTH, SCREEN_HEIGHT])
 
     NUM_TERMS = args.terms
@@ -21,7 +22,7 @@ def main(args):
     theta = 0
     d_theta = 2*math.pi/2e3
     dt = 0.1
-    fund_radius = 100
+    fund_radius = SCREEN_HEIGHT/5
 
     plot_point_list = []
 
@@ -78,8 +79,9 @@ def main(args):
     pygame.quit()
 
 if __name__ == '__main__':
+    # get args
     parser = argparse.ArgumentParser()
     parser.add_argument("-t", "--terms", help="number of sinusoidal terms", type=int, default=3)
     args = parser.parse_args()
-    
+
     main(args)
