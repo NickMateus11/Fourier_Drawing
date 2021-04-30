@@ -16,6 +16,7 @@ def main(args):
     # Set up the drawing window
     pygame.init()
     screen = pygame.display.set_mode([SCREEN_WIDTH, SCREEN_HEIGHT])
+    font = pygame.font.SysFont('Times New Roman', 20)
 
     NUM_TERMS = args.terms
 
@@ -70,11 +71,17 @@ def main(args):
         if len(plot_point_list) > 2e3:
             plot_point_list.pop(0)
 
-        # draw lines connecting points
+        # draw line from last circle to plot
+        pygame.draw.line(screen, WHITE, endpoint, plot_point_list[-1])
+
+        # draw lines connecting plot points
         if len(plot_point_list)>=2:
             pygame.draw.lines(screen, WHITE, False, plot_point_list, 2)       
 
-        pygame.display.update()
+        textsurface = font.render(f"Terms: {NUM_TERMS}", True, WHITE)
+        screen.blit(textsurface, (SCREEN_WIDTH/5, SCREEN_HEIGHT/10))
+        pygame.display.flip()
+
 
     pygame.quit()
 
