@@ -1,7 +1,6 @@
 import pygame
 from pygame.locals import *
 
-
 import math
 import argparse
 
@@ -78,6 +77,7 @@ def main(args):
         if len(plot_point_list)>=2:
             pygame.draw.lines(screen, WHITE, False, plot_point_list, 2)       
 
+        # display text and update screen
         textsurface = font.render(f"Terms: {NUM_TERMS}", True, WHITE)
         screen.blit(textsurface, (SCREEN_WIDTH/5, SCREEN_HEIGHT/10))
         pygame.display.flip()
