@@ -15,7 +15,7 @@ def main():
     screen = pygame.display.set_mode([SCREEN_WIDTH, SCREEN_HEIGHT])
 
     theta = 0
-    d_theta = 2*math.pi/5e3
+    d_theta = 2*math.pi/2e3
     num_terms = 3
     fund_radius = 100
 
@@ -30,7 +30,7 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
 
-        # Fill the background with white
+        # Fill the background with black
         screen.fill(BLACK)
 
         prev_dot_pos = (SCREEN_WIDTH/4, SCREEN_HEIGHT/2)
@@ -43,14 +43,14 @@ def main():
             pygame.draw.circle(screen, WHITE, cntr_pos, radius, width)
 
             dot_pos = (cntr_pos[0] + radius*math.cos(n*theta), cntr_pos[1] + radius*math.sin(n*theta))
-            theta = theta + d_theta if theta < 2*math.pi else 0
             radius = 5
             pygame.draw.circle(screen, WHITE, dot_pos, radius)
 
             pygame.draw.line(screen, WHITE, cntr_pos, dot_pos)
 
             prev_dot_pos = dot_pos
-
+        
+        theta = theta + d_theta if theta < 2*math.pi else 0
         endpoint = prev_dot_pos
 
         plot_point_list = [(point[0]+0.1,point[1]) for point in plot_point_list]
