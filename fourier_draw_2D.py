@@ -3,6 +3,7 @@ from pygame.locals import *
 
 import math
 import argparse
+import numpy as np
 
 
 BLACK = (0, 0, 0)
@@ -11,12 +12,6 @@ WHITE = (255, 255, 255)
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
-def dft(f_n, n):
-    x_n = [p[0] for p in f_n]
-    y_n = [p[1] for p in f_n]
-    a_k = (2/len(x_n))*sum([x_n[t]*math.cos(n*t/len(x_n)) for t in range(len(x_n))])
-    b_k = (2/len(y_n))*sum([y_n[t]*math.sin(n*t/len(y_n)) for t in range(len(y_n))])
-    return a_k, b_k
 
 def main(args):
     # Set up the drawing window
@@ -27,12 +22,32 @@ def main(args):
     NUM_TERMS = args.terms
 
     theta = 0
-    d_theta = 2*math.pi/2e3
+    d_theta = 2*math.pi/5e3
     dt = 0.1
     fund_radius = SCREEN_HEIGHT/5
 
+    # load drawing
     with open('drawing.xy','r') as file:
-        draw_points = [tuple([int(x) for x in p.split(',')]) for p in file.read().strip().split()]
+        draw_points = [tuple([int(n) for n in p.split(',')]) for p in file.read().strip().split()]
+
+    # structure data as required
+    c, s = np.cos(-math.pi/4), np.sin(-math.pi/4)
+    R = np.array(((c, -s), (s, c)))
+    draw_points = np.matmul(R, np.array(draw_points).T).T
+    draw_points = np.concatenate((draw_points, draw_points[::-1]))   # make the points symmetric
+
+    dft2 = np.fft.rfft2(draw_points)[:NUM_TERMS]
+    print(np.linalg.norm(dft2))
+    dft2 *= 500 / np.linalg.norm(dft2) 
+
+    # extract mag and phase of each frequency
+    dft_y = [[math.sqrt((y.real)**2 + (y.imag)**2), math.atan2(y.imag,y.real), i] for i,y in enumerate(dft2[:,0])]
+    dft_x = [[math.sqrt((x.real)**2 + (x.imag)**2), math.atan2(x.imag,x.real), i] for i,x in enumerate(dft2[:,1])]
+
+    # sort by mag
+    # dft_y = sorted(dft_y, key=lambda k: k[2])
+    # dft_x = sorted(dft_x, key=lambda k: k[2])
+
     plot_point_list = []
 
     # Run until the user asks to quit
@@ -49,28 +64,35 @@ def main(args):
 
         prev_dot_pos1 = (SCREEN_WIDTH/5, 7*SCREEN_HEIGHT/10)
         prev_dot_pos2 = (7*SCREEN_WIDTH/10, SCREEN_HEIGHT/5)
-        for term in range(NUM_TERMS):
-            n = term*2+1
-            [a_n, b_n] = dft(draw_points, n)
+        for e in range(1,len(dft2)):
+            mag = dft_y[e][0]
+            phase = dft_y[e][1] + math.pi/2
+            i = dft_y[e][2]
             # circle - left
             cntr_pos1 = prev_dot_pos1
-            radius = fund_radius * a_n
+            radius = mag
             width = 2
-            pygame.draw.circle(screen, WHITE, cntr_pos1, abs(radius), width)
+            pygame.draw.circle(screen, WHITE, cntr_pos1, radius, width)
+
             # dot on outer edge
-            dot_pos1 = (cntr_pos1[0] + radius*math.cos(n*theta), cntr_pos1[1] + radius*math.sin(n*theta))
+            dot_pos1 = (cntr_pos1[0] + radius*math.cos(i*theta+phase), cntr_pos1[1] + radius*math.sin(i*theta+phase))
             radius = 5
             pygame.draw.circle(screen, WHITE, dot_pos1, radius)
+
             # line from center to outer dot
             pygame.draw.line(screen, WHITE, cntr_pos1, dot_pos1)
-
+            
+            # ----
+            mag = dft_x[i][0]
+            phase = dft_x[i][1]
+            i = dft_x[e][2]
             # circle - top
             cntr_pos2 = prev_dot_pos2
-            radius = fund_radius * b_n
+            radius = mag
             width = 2
-            pygame.draw.circle(screen, WHITE, cntr_pos2, abs(radius), width)
+            pygame.draw.circle(screen, WHITE, cntr_pos2, radius, width)
             # dot on outer edge
-            dot_pos2 = (cntr_pos2[0] + radius*math.cos(n*theta), cntr_pos2[1] + radius*math.sin(n*theta))
+            dot_pos2 = (cntr_pos2[0] + radius*math.cos(i*theta+phase), cntr_pos2[1] + radius*math.sin(i*theta+phase))
             radius = 5
             pygame.draw.circle(screen, WHITE, dot_pos2, radius)
             # line from center to outer dot
@@ -85,7 +107,7 @@ def main(args):
         endpoint2 = prev_dot_pos2
 
         # remove points as list grows
-        if len(plot_point_list) > 2e3:
+        if len(plot_point_list) > 2.5e3:
             plot_point_list.pop(0)
 
         # draw line from last circle to plot
@@ -112,7 +134,7 @@ def main(args):
 if __name__ == '__main__':
     # get args
     parser = argparse.ArgumentParser()
-    parser.add_argument("-t", "--terms", help="number of sinusoidal terms", type=int, default=3)
+    parser.add_argument("-t", "--terms", help="number of sinusoidal terms", type=int, default=50)
     args = parser.parse_args()
 
     main(args)

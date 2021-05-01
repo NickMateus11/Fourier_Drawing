@@ -40,8 +40,12 @@ def main():
                 points = []
             draw = True
             pos_tuple = pygame.mouse.get_pos()
-            if not points or not points[-1] == pos_tuple:
+            if not points:
                 points.append(pos_tuple)
+                startX = pos_tuple[0]
+            else:
+                points.append((startX, pos_tuple[1]))
+            points = [(p[0]+0.2, p[1]) for p in points]
         else: 
             draw = False
         
