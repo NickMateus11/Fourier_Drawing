@@ -71,13 +71,13 @@ def main(args):
             # circle - left
             cntr_pos1 = prev_dot_pos1
             radius = mag
-            width = 2
+            width = 1
             pygame.draw.circle(screen, WHITE, cntr_pos1, radius, width)
 
             # dot on outer edge
             dot_pos1 = (cntr_pos1[0] + radius*math.cos(i*theta+phase), cntr_pos1[1] + radius*math.sin(i*theta+phase))
-            radius = 5
-            pygame.draw.circle(screen, WHITE, dot_pos1, radius)
+            # radius = 5
+            # pygame.draw.circle(screen, WHITE, dot_pos1, radius)
 
             # line from center to outer dot
             pygame.draw.line(screen, WHITE, cntr_pos1, dot_pos1)
@@ -89,12 +89,12 @@ def main(args):
             # circle - top
             cntr_pos2 = prev_dot_pos2
             radius = mag
-            width = 2
+            width = 1
             pygame.draw.circle(screen, WHITE, cntr_pos2, radius, width)
             # dot on outer edge
             dot_pos2 = (cntr_pos2[0] + radius*math.cos(i*theta+phase), cntr_pos2[1] + radius*math.sin(i*theta+phase))
-            radius = 5
-            pygame.draw.circle(screen, WHITE, dot_pos2, radius)
+            # radius = 5
+            # pygame.draw.circle(screen, WHITE, dot_pos2, radius)
             # line from center to outer dot
             pygame.draw.line(screen, WHITE, cntr_pos2, dot_pos2)
 
