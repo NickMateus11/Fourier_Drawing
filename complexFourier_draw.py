@@ -29,6 +29,8 @@ grey = pygame.Color(120, 120, 120)
 dark_grey = pygame.Color(90, 90, 90)
 black = pygame.Color(0,0,0)
 
+screen.fill(black)
+
 font = pygame.font.SysFont(pygame.font.get_default_font(), 30)
 
 draw = False
@@ -59,6 +61,7 @@ while wait:
 
     for p in track:
         screen.set_at(round(p), white)
+    
     pygame.display.update()
 
 print("processing track")
