@@ -126,8 +126,8 @@ def main(args):
 
         # draw line from last circle to plot
         draw_point = (endpoint2[0], endpoint1[1])
-        pygame.draw.line(screen, WHITE, endpoint1, draw_point)
-        pygame.draw.line(screen, WHITE, endpoint2, draw_point)
+        pygame.draw.line(screen, GREY, endpoint1, draw_point)
+        pygame.draw.line(screen, GREY, endpoint2, draw_point)
         pygame.draw.circle(screen, WHITE, draw_point, 5)
 
         # add meeting point to point list
