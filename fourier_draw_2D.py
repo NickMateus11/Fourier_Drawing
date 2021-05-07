@@ -40,7 +40,7 @@ def main(args):
         draw_points = np.concatenate((draw_points, draw_points[::-1]))   # make the points symmetric
 
     dft2 = np.fft.rfft2(draw_points)[:NUM_TERMS]
-    dft2 *= min(SCREEN_WIDTH,SCREEN_HEIGHT) / np.linalg.norm(dft2) 
+    dft2 *= min(SCREEN_WIDTH,SCREEN_HEIGHT) / np.linalg.norm(dft2)
 
     # extract mag and phase of each frequency
     dft_y = [[math.sqrt((y.real)**2 + (y.imag)**2), math.atan2(y.imag,y.real), i] for i,y in enumerate(dft2[:,0])]
@@ -64,8 +64,8 @@ def main(args):
         # Fill the background with black
         screen.fill(BLACK)
 
-        prev_dot_pos1 = (SCREEN_WIDTH/5, 7*SCREEN_HEIGHT/10)
-        prev_dot_pos2 = (7*SCREEN_WIDTH/10, SCREEN_HEIGHT/5)
+        prev_dot_pos1 = (SCREEN_WIDTH/6, 7*SCREEN_HEIGHT/10)
+        prev_dot_pos2 = (6*SCREEN_WIDTH/10, SCREEN_HEIGHT/5)
         for e in range(NUM_TERMS):
             mag = dft_y[e][0]
             phase = dft_y[e][1] + math.pi/2
